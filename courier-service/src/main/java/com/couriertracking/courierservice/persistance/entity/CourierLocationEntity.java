@@ -20,8 +20,9 @@ public class CourierLocationEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column
-    private Long courierId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "courierLocation", nullable = false)
+    private CourierEntity courier;
 
     @Column
     private Double latitude;
@@ -29,7 +30,9 @@ public class CourierLocationEntity {
     @Column
     private Double longitude;
 
+    @CreatedDate
+    private LocalDateTime createdDate;
+
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
-
 }

@@ -9,11 +9,11 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CourierResponse {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private Integer courierStatus;
-    private LocalDateTime createdDate;
+public class CourierLocationResponse {
+    private Long courierId;
+    private String courierName;
+    private String courierSurname;
+    private Double latitude;
+    private Double longitude;
     private LocalDateTime lastModifiedDate;
 }

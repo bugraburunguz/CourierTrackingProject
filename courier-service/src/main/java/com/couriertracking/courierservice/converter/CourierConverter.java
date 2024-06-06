@@ -11,15 +11,6 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CourierConverter {
-    public static CourierEntity toCourierEntity(CourierRegisterRequest request) {
-        CourierEntity entity = new CourierEntity();
-        entity.setFirstName(request.getFirstName());
-        entity.setLastName(request.getLastName());
-        entity.setCourierStatus(CourierStatus.OFFLINE.getStatus());
-
-        return entity;
-    }
-
     public static List<CourierResponse> toCourierResponseList(List<CourierEntity> entities) {
         return entities
                 .stream()
@@ -29,6 +20,7 @@ public class CourierConverter {
 
     public static CourierResponse toCourierResponse(CourierEntity courierEntity) {
         return CourierResponse.builder()
+                .id(courierEntity.getId())
                 .firstName(courierEntity.getFirstName())
                 .lastName(courierEntity.getLastName())
                 .courierStatus(courierEntity.getCourierStatus())
