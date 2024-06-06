@@ -46,20 +46,6 @@ public class CourierLocationService {
         return CourierLocationConverter.toCourierResponse(courierLocationRepository.findById(id).orElseThrow(CourierNotFoundException::new));
     }
 
-    public CourierLocationEntity updateCourierLocation(Long id, CourierLocationEntity locationDetails) {
-        Optional<CourierLocationEntity> optionalLocation = courierLocationRepository.findById(id);
-        if (optionalLocation.isPresent()) {
-            CourierLocationEntity location = optionalLocation.get();
-            location.setLatitude(locationDetails.getLatitude());
-            location.setLongitude(locationDetails.getLongitude());
-            location.setLastModifiedDate(locationDetails.getLastModifiedDate());
-            return courierLocationRepository.save(location);
-        } else {
-            throw new RuntimeException("Courier location not found with id " + id);
-        }
-    }
-
-    // Delete
     public void deleteCourierLocation(Long id) {
         courierLocationRepository.deleteById(id);
     }
