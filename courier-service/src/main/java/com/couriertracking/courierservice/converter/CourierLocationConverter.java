@@ -38,5 +38,4 @@ public class CourierLocationConverter {
         entity.setLatitude(courierLocationRequest.getLatitude());
         return entity;
     }
-
 }
