@@ -30,7 +30,7 @@ public class CourierEntity {
     @Column
     private Integer courierStatus;
 
-    @OneToMany(mappedBy = "courierId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "courier", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CourierLocationEntity> courierLocation;
 
     @CreatedDate

@@ -21,7 +21,7 @@ public class CourierLocationEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "courierLocation", nullable = false)
+    @JoinColumn(name = "courierId", nullable = false)
     private CourierEntity courier;
 
     @Column

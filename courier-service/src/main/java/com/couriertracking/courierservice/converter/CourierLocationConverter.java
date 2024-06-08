@@ -20,14 +20,14 @@ public class CourierLocationConverter {
     }
 
  public static CourierLocationResponse toCourierResponse(CourierLocationEntity entity) {
-        return CourierLocationResponse.builder()
-                .courierId(entity.getCourier().getId())
-                .courierName(entity.getCourier().getFirstName())
-                .courierSurname(entity.getCourier().getLastName())
-                .latitude(entity.getLatitude())
-                .longitude(entity.getLongitude())
-                .lastModifiedDate(entity.getLastModifiedDate())
-                .build();
+           CourierLocationResponse courierLocationResponse = new CourierLocationResponse();
+           courierLocationResponse.setFirstName(entity.getCourier().getFirstName());
+           courierLocationResponse.setCourierStatus(entity.getCourier().getCourierStatus());
+           courierLocationResponse.setLastName(entity.getCourier().getLastName());
+           courierLocationResponse.setLatitude(entity.getLatitude());
+           courierLocationResponse.setLongitude(entity.getLongitude());
+           courierLocationResponse.setLastModifiedDate(entity.getLastModifiedDate());
+        return courierLocationResponse;
     }
 
 }
