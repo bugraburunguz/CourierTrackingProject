@@ -15,11 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-
-import static com.couriertracking.courierservice.advice.constant.CourierServiceConstant.EARTH_RADIUS;
-import static com.couriertracking.courierservice.converter.CourierConverter.toCourierResponseList;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
