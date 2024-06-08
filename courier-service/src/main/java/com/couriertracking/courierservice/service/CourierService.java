@@ -60,14 +60,4 @@ public class CourierService {
     public void deleteCourier(Long id) {
         courierRepository.deleteById(id);
     }
-
-    private CourierEntity toCourierEntity(CourierRegisterRequest request) {
-        CourierEntity entity = new CourierEntity();
-        entity.setFirstName(request.getFirstName());
-        entity.setLastName(request.getLastName());
-        entity.setCourierStatus(CourierStatus.OFFLINE.getStatus());
-
-        return entity;
-    }
-
 }

@@ -31,7 +31,7 @@ public class CourierLocationService {
     @Transactional
     public void saveCurrentCourierLocation(CourierLocationRequest courierLocationRequest) {
         CourierEntity courierEntity = courierRepository.findById(courierLocationRequest.getCourierId()).orElseThrow(CourierNotFoundException::new);
-        CourierLocationEntity entity = toCourierLocationEntity(courierLocationRequest, courierEntity);
+        CourierLocationEntity entity = CourierLocationConverter.toCourierLocationEntity(courierLocationRequest, courierEntity);
 
         courierLocationRepository.save(entity);
         log.info("Courier current location: {} {}", courierLocationRequest.getLatitude(), courierLocationRequest.getLongitude());
@@ -48,13 +48,5 @@ public class CourierLocationService {
 
     public void deleteCourierLocation(Long id) {
         courierLocationRepository.deleteById(id);
-    }
-
-    private CourierLocationEntity toCourierLocationEntity(CourierLocationRequest courierLocationRequest, CourierEntity courierEntity) {
-        CourierLocationEntity entity = new CourierLocationEntity();
-        entity.setCourier(courierEntity);
-        entity.setLongitude(courierLocationRequest.getLongitude());
-        entity.setLatitude(courierLocationRequest.getLatitude());
-        return entity;
     }
 }

@@ -1,12 +1,12 @@
-package com.couriertracking.courierservice.service.impl;
+package com.couriertracking.evaluationservice.model.impl;
 
-import com.couriertracking.courierservice.model.haversine.HaversineStrategy;
+import com.couriertracking.evaluationservice.model.Haversine;
 
-import static com.couriertracking.courierservice.advice.constant.CourierServiceConstant.EARTH_RADIUS;
+import static com.couriertracking.evaluationservice.advice.constant.EvaluationServiceConstant.EARTH_RADIUS;
 
-public class HaversineImpl implements HaversineStrategy {
+public class HaversineImpl implements Haversine {
     @Override
-    public double calculate(double lat1, double lon1, double lat2, double lon2) {
+    public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
