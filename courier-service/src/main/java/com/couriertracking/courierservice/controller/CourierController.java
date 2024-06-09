@@ -1,5 +1,6 @@
 package com.couriertracking.courierservice.controller;
 
+import com.couriertracking.couriermodel.enums.CourierStatus;
 import com.couriertracking.couriermodel.request.CourierRegisterRequest;
 import com.couriertracking.couriermodel.request.CourierRequest;
 import com.couriertracking.couriermodel.response.CourierResponse;
@@ -47,8 +48,8 @@ public class CourierController {
         return courierService.getTotalDistanceTraveled(id);
     }
 
-    @GetMapping("/nearest")
-    public CourierEntity findNearestCourier(@RequestParam double latitude, @RequestParam double longitude) {
-        return courierService.findNearestAvailableCourier(latitude, longitude);
+    @PutMapping("/{id}/update-status")
+    public void updateStatus(@PathVariable Long id, @RequestParam CourierStatus status) {
+        courierService.updateStatus(id, status);
     }
 }

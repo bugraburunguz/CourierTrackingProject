@@ -36,7 +36,7 @@ public class StoreController {
         return storeService.updateStore(id, request);
     }
 
-    @GetMapping("/stores/nearest")
+    @GetMapping("/nearest-store")
     public StoreEntity findNearestStore(@RequestParam double latitude, @RequestParam double longitude) {
         return storeService.findNearestStore(latitude, longitude);
     }

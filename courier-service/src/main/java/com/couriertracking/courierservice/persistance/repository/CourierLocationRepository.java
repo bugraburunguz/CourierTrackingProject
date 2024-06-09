@@ -7,14 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CourierLocationRepository extends JpaRepository<CourierLocationEntity, Long> {
-    List<CourierLocationEntity> findAllByCourierOrderByLastModifiedDateAsc(CourierEntity courier);
+    List<CourierLocationEntity> findAllByCourierOrderByLastModifiedDateDesc(CourierEntity courier);
     CourierLocationEntity findByCourierOrderByLastModifiedDateAsc(CourierEntity courier);
 
     List<CourierLocationEntity> findByCourierOrderByCreatedDateAsc(CourierEntity courier);
 
-    CourierLocationEntity findFirstByCourierOrderByCreatedDateDesc(CourierEntity courier);
-
-
-
-
+    CourierLocationEntity findTopByCourierOrderByCreatedDateDesc(CourierEntity courier);
 }

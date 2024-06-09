@@ -34,4 +34,9 @@ public class OrderController {
     public void deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
     }
+
+    @PutMapping("/{orderId}/{courierId}/deliver-order")
+    public void deliverOrder(@PathVariable Long orderId, @PathVariable Long courierId) {
+        orderService.deliverOrder(orderId, courierId);
+    }
 }

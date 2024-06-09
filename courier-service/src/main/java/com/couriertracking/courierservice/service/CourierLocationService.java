@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.couriertracking.courierservice.converter.CourierConverter.toCourierResponse;
 import static com.couriertracking.courierservice.converter.CourierLocationConverter.toCourierLocationEntity;
 
 @Service
@@ -81,6 +82,35 @@ public class CourierLocationService {
         return CourierLocationConverter.toCourierResponse(courierLocationRepository.findByCourierOrderByLastModifiedDateAsc(courier));
     }
 
+    @Transactional
+    public CourierLocationResponse findNearestAvailableCourier(double latitude, double longitude) {
+        List<CourierEntity> availableCouriers = courierRepository.findByCourierStatus(CourierStatus.AVAILABLE.getStatus());
+        if (availableCouriers.isEmpty()) {
+            throw new CourierNotFoundException();
+        }
+
+        CourierEntity nearestCourier = null;
+        double nearestDistance = Double.MAX_VALUE;
+
+        for (CourierEntity courier : availableCouriers) {
+            List<CourierLocationEntity> locations = courierLocationRepository.findAllByCourierOrderByLastModifiedDateDesc(courier);
+            if (!locations.isEmpty()) {
+                CourierLocationEntity currentLocation = locations.get(0);
+                double distance = evaluationServiceClient.calculateDistance(latitude, longitude, currentLocation.getLatitude(), currentLocation.getLongitude());
+                if (distance < nearestDistance) {
+                    nearestDistance = distance;
+                    nearestCourier = courier;
+                }
+            }
+        }
+
+        if (nearestCourier == null) {
+            throw new CourierNotFoundException();
+        }
+
+        CourierLocationEntity nearestLocation = courierLocationRepository.findTopByCourierOrderByCreatedDateDesc(nearestCourier);
+        return CourierLocationConverter.toCourierResponse(nearestLocation);
+    }
     public void deleteCourierLocation(Long id) {
         courierLocationRepository.deleteById(id);
     }

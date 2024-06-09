@@ -2,6 +2,7 @@ package com.couriertracking.courierservice.controller;
 
 import com.couriertracking.couriermodel.request.CourierLocationRequest;
 import com.couriertracking.couriermodel.response.CourierLocationResponse;
+import com.couriertracking.courierservice.persistance.entity.CourierEntity;
 import com.couriertracking.courierservice.service.CourierLocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,20 +24,22 @@ public class CourierLocationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CourierLocationResponse>> getAllCourierLocations() {
-        List<CourierLocationResponse> responses = courierLocationService.getAllCourierLocations();
-        return ResponseEntity.ok(responses);
+    public List<CourierLocationResponse> getAllCourierLocations() {
+        return courierLocationService.getAllCourierLocations();
     }
 
     @GetMapping("/{courierId}")
-    public ResponseEntity<CourierLocationResponse> getCourierLocationById(@PathVariable Long courierId) {
-        CourierLocationResponse response = courierLocationService.getCourierLocationById(courierId);
-        return ResponseEntity.ok(response);
+    public CourierLocationResponse getCourierLocationById(@PathVariable Long courierId) {
+        return courierLocationService.getCourierLocationById(courierId);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourierLocation(@PathVariable Long id) {
         courierLocationService.deleteCourierLocation(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/nearest-courier")
+    public CourierLocationResponse findNearestCourier(@RequestParam double latitude, @RequestParam double longitude) {
+        return courierLocationService.findNearestAvailableCourier(latitude, longitude);
     }
 }

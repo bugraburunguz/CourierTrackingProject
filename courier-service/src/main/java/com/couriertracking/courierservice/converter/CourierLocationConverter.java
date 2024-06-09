@@ -22,11 +22,13 @@ public class CourierLocationConverter {
 
     public static CourierLocationResponse toCourierResponse(CourierLocationEntity entity) {
         CourierLocationResponse courierLocationResponse = new CourierLocationResponse();
+        courierLocationResponse.setId(entity.getCourier().getId());
         courierLocationResponse.setFirstName(entity.getCourier().getFirstName());
         courierLocationResponse.setCourierStatus(entity.getCourier().getCourierStatus());
         courierLocationResponse.setLastName(entity.getCourier().getLastName());
         courierLocationResponse.setLatitude(entity.getLatitude());
         courierLocationResponse.setLongitude(entity.getLongitude());
+        courierLocationResponse.setCreatedDate(entity.getCreatedDate());
         courierLocationResponse.setLastModifiedDate(entity.getLastModifiedDate());
         return courierLocationResponse;
     }
