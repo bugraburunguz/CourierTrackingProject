@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class OrderRequest {
     private Long customerId;
     private Long courierId;
+    private Long storeId;
 }

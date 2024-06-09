@@ -3,6 +3,7 @@ package com.couriertracking.storeservice.service;
 import com.couriertracking.storemodel.request.StoreRequest;
 import com.couriertracking.storemodel.resonse.StoreResponse;
 import com.couriertracking.storeservice.advice.exception.StoreNotFoundException;
+import com.couriertracking.storeservice.client.EvaluationServiceClient;
 import com.couriertracking.storeservice.converter.StoreConverter;
 import com.couriertracking.storeservice.persistance.repository.StoreRepository;
 import com.couriertracking.storeservice.persistance.entity.StoreEntity;
@@ -11,12 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class StoreService {
 
     private final StoreRepository storeRepository;
+    private final EvaluationServiceClient evaluationServiceClient;
 
     @Transactional
     public StoreResponse createStore(StoreRequest request) {
@@ -50,4 +53,21 @@ public class StoreService {
     public void deleteStore(Long id) {
         storeRepository.deleteById(id);
     }
+
+    public StoreResponse findNearestStore(double latitude, double longitude) {
+        List<StoreEntity> stores = storeRepository.findAll();
+        StoreEntity nearestStore = null;
+        double nearestDistance = Double.MAX_VALUE;
+
+        for (StoreEntity store : stores) {
+            double distance = evaluationServiceClient.calculateDistance(latitude, longitude, store.getLat(), store.getLng());
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearestStore = store;
+            }
+        }
+
+        return StoreConverter.toStoreResponse(Objects.requireNonNull(nearestStore));
+    }
+
 }

@@ -15,6 +15,7 @@ public class OrderResponse {
     private Long id;
     private Long customerId;
     private Long courierId;
+    private Long storeId;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
 }

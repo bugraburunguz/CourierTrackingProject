@@ -40,4 +40,14 @@ public class CourierController {
     public void deleteCourier(@PathVariable Long id) {
         courierService.deleteCourier(id);
     }
+
+    @GetMapping("/couriers/{id}/total-distance")
+    public double getTotalDistanceTraveled(@PathVariable Long id) {
+        return courierService.getTotalDistanceTraveled(id);
+    }
+
+    @GetMapping("/couriers/nearest")
+    public CourierResponse findNearestCourier(@RequestParam double latitude, @RequestParam double longitude) {
+        return courierService.findNearestCourier(latitude, longitude);
+    }
 }

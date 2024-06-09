@@ -35,6 +35,11 @@ public class StoreController {
         return storeService.updateStore(id, request);
     }
 
+    @GetMapping("/api/stores/nearest")
+    public StoreResponse findNearestStore(@RequestParam double latitude, @RequestParam double longitude) {
+        return storeService.findNearestStore(latitude, longitude);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteStore(@PathVariable Long id) {
         storeService.deleteStore(id);

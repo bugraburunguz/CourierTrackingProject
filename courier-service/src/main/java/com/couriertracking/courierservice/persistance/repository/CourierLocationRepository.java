@@ -10,5 +10,11 @@ public interface CourierLocationRepository extends JpaRepository<CourierLocation
     List<CourierLocationEntity> findAllByCourierOrderByLastModifiedDateAsc(CourierEntity courier);
     CourierLocationEntity findByCourierOrderByLastModifiedDateAsc(CourierEntity courier);
 
+    List<CourierLocationEntity> findByCourierOrderByCreatedDateAsc(CourierEntity courier);
+
+    CourierLocationEntity findFirstByCourierOrderByCreatedDateDesc(CourierEntity courier);
+
+
+
 
 }

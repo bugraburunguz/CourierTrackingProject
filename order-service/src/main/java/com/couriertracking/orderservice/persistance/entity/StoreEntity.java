@@ -1,6 +1,5 @@
 package com.couriertracking.orderservice.persistance.entity;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,23 +13,20 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "orders")
-public class OrderEntity {
+@Table(name = "stores")
+public class StoreEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customerId", nullable = false)
-    private CustomerEntity customer;
+    @Column(nullable = false)
+    private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "courierId", nullable = false)
-    private CourierEntity courier;
+    @Column(nullable = false)
+    private Double lat;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeId", nullable = false)
-    private StoreEntity store;
+    @Column(nullable = false)
+    private Double lng;
 
     @CreatedDate
     private LocalDateTime createdDate;

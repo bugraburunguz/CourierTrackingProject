@@ -14,6 +14,12 @@ spring:
     hibernate:
       ddl-auto: update
 
+feign:
+  client:
+    config:
+      evaluation-service:
+        name: evaluation-service
+        url: http://localhost:8083
 
 springdoc:
   packagesToScan: com.couriertracking
