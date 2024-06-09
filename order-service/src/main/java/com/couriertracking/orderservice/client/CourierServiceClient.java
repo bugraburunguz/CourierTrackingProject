@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "courier-service", url = "${feign.client.config.courier-service.url}")
 public interface CourierServiceClient {
-    @GetMapping("/courier-location/nearest-courier")
+    @GetMapping("/courier-locations/nearest-courier")
     CourierLocationResponse findNearestCourier(@RequestParam double latitude, @RequestParam double longitude);
 
-    @GetMapping("/{id}/total-distance")
+    @GetMapping("/courier/{id}/total-distance")
     double calculateTotalDistance(@PathVariable Long id);
 
-    @PutMapping("/{id}/update-status")
+    @PutMapping("/courier/{id}/status")
     void updateStatus(@PathVariable Long id, @RequestParam CourierStatus status);
 
-    @GetMapping("/{id}")
+    @GetMapping("/courier/{id}")
     CourierResponse getCourierById(@PathVariable Long id);
 
-    @GetMapping("/courier-location/{courierId}")
+    @GetMapping("/courier-locations/{courierId}")
     CourierLocationResponse getCourierLocationById(@PathVariable Long courierId);
 
 }

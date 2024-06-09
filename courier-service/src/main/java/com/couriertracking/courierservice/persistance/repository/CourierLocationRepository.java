@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface CourierLocationRepository extends JpaRepository<CourierLocationEntity, Long> {
-    Optional<CourierLocationEntity> findFirstByCourierIdOrderByLastModifiedDate(Long courierId);
-    CourierLocationEntity findByCourierOrderByLastModifiedDateAsc(CourierEntity courier);
+    Optional<CourierLocationEntity> findFirstByCourierIdOrderByLastModifiedDateDesc(Long courierId);
+    CourierLocationEntity findFirstByCourierOrderByCreatedDateDesc(CourierEntity courier);
     List<CourierLocationEntity> findByCourierOrderByCreatedDateAsc(CourierEntity courier);
 }
