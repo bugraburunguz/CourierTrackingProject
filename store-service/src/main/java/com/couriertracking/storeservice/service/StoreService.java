@@ -11,8 +11,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.AbstractMap;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,12 +56,20 @@ public class StoreService {
 
     public StoreResponse findNearestStore(double latitude, double longitude) {
         List<StoreEntity> stores = storeRepository.findAll();
+        StoreEntity nearestStore = null;
+        double nearestDistance = Double.MAX_VALUE;
 
-        StoreEntity nearestStore = stores.stream()
-                .map(store -> new AbstractMap.SimpleEntry<>(store, evaluationServiceClient.calculateDistance(latitude, longitude, store.getLat(), store.getLng())))
-                .min(Comparator.comparingDouble(AbstractMap.SimpleEntry::getValue))
-                .map(AbstractMap.SimpleEntry::getKey)
-                .orElseThrow(StoreNotFoundException::new);
+        for (StoreEntity store : stores) {
+            double distance = evaluationServiceClient.calculateDistance(latitude, longitude, store.getLat(), store.getLng());
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearestStore = store;
+            }
+        }
+
+        if (nearestStore == null) {
+            throw new StoreNotFoundException();
+        }
 
         return StoreConverter.toStoreResponse(nearestStore);
     }
