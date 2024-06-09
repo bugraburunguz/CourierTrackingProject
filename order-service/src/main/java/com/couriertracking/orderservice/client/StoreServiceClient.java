@@ -1,6 +1,7 @@
 package com.couriertracking.orderservice.client;
 
 import com.couriertracking.orderservice.persistance.entity.StoreEntity;
+import com.couriertracking.storemodel.resonse.StoreResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface StoreServiceClient {
 
     @GetMapping("/nearest-store")
-    StoreEntity findNearestStore(@RequestParam double latitude, @RequestParam double longitude);
+    StoreResponse findNearestStore(@RequestParam double latitude, @RequestParam double longitude);
 }

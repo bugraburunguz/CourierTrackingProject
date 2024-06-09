@@ -12,7 +12,8 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/courier/location")
+@RequestMapping("/courier-locations")
+//TODO: PATH DEĞİŞTİ !!!
 public class CourierLocationController {
 
     private final CourierLocationService courierLocationService;
@@ -34,10 +35,10 @@ public class CourierLocationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourierLocation(@PathVariable Long id) {
+    public void deleteCourierLocation(@PathVariable Long id) {
         courierLocationService.deleteCourierLocation(id);
-        return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/nearest-courier")
     public CourierLocationResponse findNearestCourier(@RequestParam double latitude, @RequestParam double longitude) {
         return courierLocationService.findNearestAvailableCourier(latitude, longitude);

@@ -16,7 +16,6 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "courier")
 public class CourierEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

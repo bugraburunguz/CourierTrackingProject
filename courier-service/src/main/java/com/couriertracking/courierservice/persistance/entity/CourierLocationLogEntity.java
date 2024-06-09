@@ -18,11 +18,11 @@ public class CourierLocationLogEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "courierId", nullable = false)
     private CourierEntity courier;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "storeId", nullable = false)
     private StoreEntity store;
 

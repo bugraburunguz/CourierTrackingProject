@@ -47,8 +47,8 @@ public class CourierController {
     public double getTotalDistanceTraveled(@PathVariable Long id) {
         return courierService.getTotalDistanceTraveled(id);
     }
-
-    @PutMapping("/{id}/update-status")
+    //TODO: PATH DEĞİŞTİ
+    @PutMapping("/{id}/status")
     public void updateStatus(@PathVariable Long id, @RequestParam CourierStatus status) {
         courierService.updateStatus(id, status);
     }

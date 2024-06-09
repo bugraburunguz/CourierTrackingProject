@@ -33,6 +33,6 @@ public class StoreConverter {
     public static List<StoreResponse> toStoreResponseList(List<StoreEntity> entities) {
         return entities.stream()
                 .map(StoreConverter::toStoreResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

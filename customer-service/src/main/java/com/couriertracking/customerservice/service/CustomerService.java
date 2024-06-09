@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+//TODO: LOG BAS ÇOĞU SERVİCE'E EKLE!!
 @Service
 @RequiredArgsConstructor
 public class CustomerService {

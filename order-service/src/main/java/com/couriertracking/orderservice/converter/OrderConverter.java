@@ -14,11 +14,15 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderConverter {
-    public static OrderEntity toOrderEntity(CustomerEntity customer, CourierEntity courier, StoreEntity store) {
+    public static OrderEntity toOrderEntity(CustomerEntity customer, Long courierId, Long storeId) {
         OrderEntity entity = new OrderEntity();
+        StoreEntity storeEntity = new StoreEntity();
+        CourierEntity courierEntity = new CourierEntity();
+        storeEntity.setId(storeId);
+        courierEntity.setId(courierId);
         entity.setCustomer(customer);
-        entity.setCourier(courier);
-        entity.setStore(store);
+        entity.setCourier(courierEntity);
+        entity.setStore(storeEntity);
         return entity;
     }
 

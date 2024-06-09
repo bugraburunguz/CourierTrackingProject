@@ -18,7 +18,7 @@ feign:
     config:
       courier-service:
         name: courier-service
-        url: http://localhost:8081/courier
+        url: http://localhost:8081
       store-service:
         name: store-service
         url: http://localhost:8085/stores

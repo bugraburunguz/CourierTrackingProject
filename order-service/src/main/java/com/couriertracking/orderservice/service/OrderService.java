@@ -16,6 +16,7 @@ import com.couriertracking.orderservice.persistance.entity.*;
 import com.couriertracking.orderservice.persistance.repository.CourierRepository;
 import com.couriertracking.orderservice.persistance.repository.CustomerRepository;
 import com.couriertracking.orderservice.persistance.repository.OrderRepository;
+import com.couriertracking.storemodel.resonse.StoreResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,15 +42,14 @@ public class OrderService {
         CustomerEntity customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(CustomerNotFoundException::new);
 
-        StoreEntity nearestStore = storeServiceClient.findNearestStore(customer.getLatitude(), customer.getLongitude());
+        StoreResponse nearestStore = storeServiceClient.findNearestStore(customer.getLatitude(), customer.getLongitude());
         CourierLocationResponse nearestAvailableCourier = courierServiceClient.findNearestCourier(nearestStore.getLat(), nearestStore.getLng());
-        CourierEntity courierEntity = courierRepository.findById(nearestAvailableCourier.getId())
-                .orElseThrow(CourierNotFoundException::new);
+
+        OrderEntity order = OrderConverter.toOrderEntity(customer, nearestAvailableCourier.getId(), nearestStore.getId());
+        OrderEntity savedOrder = orderRepository.save(order);
 
         courierServiceClient.updateStatus(nearestAvailableCourier.getId(), CourierStatus.BUSY);
 
-        OrderEntity order = OrderConverter.toOrderEntity(customer, courierEntity, nearestStore);
-        OrderEntity savedOrder = orderRepository.save(order);
         return OrderConverter.toOrderResponse(savedOrder);
     }
 
@@ -89,11 +89,13 @@ public class OrderService {
                 order.getCustomer().getLatitude(), order.getCustomer().getLongitude()
         );
 
-        if (distanceToCustomer <= 0.005) {
-            courierServiceClient.updateStatus(courier, CourierStatus.AVAILABLE);
+        if (distanceToCustomer > 0.005) {
+            //todo: yakın değilsin hatası
+            throw new RuntimeException();
         }
 
-        log.info("Order delivered.");
         orderRepository.save(order);
+        courierServiceClient.updateStatus(courier, CourierStatus.AVAILABLE);
+        log.info("Order delivered. order id: {} courier id: {}", orderId, courier);
     }
 }

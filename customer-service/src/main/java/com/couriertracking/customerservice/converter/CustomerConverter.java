@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CustomerConverter {
-
     public static CustomerEntity toCustomerEntity(CustomerRequest request) {
         CustomerEntity entity = new CustomerEntity();
         entity.setFirstName(request.getFirstName());
@@ -36,7 +35,7 @@ public class CustomerConverter {
     public static List<CustomerResponse> toCustomerResponseList(List<CustomerEntity> entities) {
         return entities.stream()
                 .map(CustomerConverter::toCustomerResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
 

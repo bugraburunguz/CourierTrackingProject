@@ -5,7 +5,7 @@ import static com.couriertracking.orderservice.advice.constant.ErrorCodes.ORDER_
 public class OrderNotFoundException extends CourierTrackingRuntimeException {
 
     public OrderNotFoundException() {
-        super(ORDER_NOT_FOUND, "Customer not found!");
+        super(ORDER_NOT_FOUND, "Order not found!");
     }
 
 }

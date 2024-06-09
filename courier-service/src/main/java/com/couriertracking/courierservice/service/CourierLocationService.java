@@ -3,15 +3,12 @@ package com.couriertracking.courierservice.service;
 import com.couriertracking.couriermodel.enums.CourierStatus;
 import com.couriertracking.couriermodel.request.CourierLocationRequest;
 import com.couriertracking.couriermodel.response.CourierLocationResponse;
-import com.couriertracking.couriermodel.response.CourierResponse;
 import com.couriertracking.courierservice.advice.exception.CourierNotFoundException;
 import com.couriertracking.courierservice.client.EvaluationServiceClient;
-import com.couriertracking.courierservice.converter.CourierConverter;
 import com.couriertracking.courierservice.converter.CourierLocationConverter;
 import com.couriertracking.courierservice.persistance.entity.CourierEntity;
 import com.couriertracking.courierservice.persistance.entity.CourierLocationEntity;
 import com.couriertracking.courierservice.persistance.entity.CourierLocationLogEntity;
-import com.couriertracking.courierservice.persistance.entity.StoreEntity;
 import com.couriertracking.courierservice.persistance.repository.CourierLocationLogRepository;
 import com.couriertracking.courierservice.persistance.repository.CourierLocationRepository;
 import com.couriertracking.courierservice.persistance.repository.CourierRepository;
@@ -23,11 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.couriertracking.courierservice.converter.CourierConverter.toCourierResponse;
 import static com.couriertracking.courierservice.converter.CourierLocationConverter.toCourierLocationEntity;
 
 @Service
@@ -41,28 +35,27 @@ public class CourierLocationService {
     private final CourierLocationLogRepository logRepository;
     private final EvaluationServiceClient evaluationServiceClient;
 
-    private final Map<Long, LocalDateTime> lastEntryTimes = new HashMap<>();
-
     @Transactional
     public void saveCurrentCourierLocation(CourierLocationRequest courierLocationRequest) {
-        CourierEntity courierEntity = courierRepository.findById(courierLocationRequest.getCourierId()).orElseThrow(CourierNotFoundException::new);
+        CourierEntity courierEntity = courierRepository.findById(courierLocationRequest.getCourierId())
+                .orElseThrow(CourierNotFoundException::new);
         CourierLocationEntity entity = toCourierLocationEntity(courierLocationRequest, courierEntity);
 
         courierLocationRepository.save(entity);
         log.info("Courier current location: {} {}", courierLocationRequest.getLatitude(), courierLocationRequest.getLongitude());
 
-        for (StoreEntity store : storeRepository.findAll()) {
+        LocalDateTime now = LocalDateTime.now();
+
+        storeRepository.findAll().forEach(store -> {
             double distance = evaluationServiceClient.calculateDistance(
                     courierLocationRequest.getLatitude(), courierLocationRequest.getLongitude(),
                     store.getLat(), store.getLng()
             );
 
-            if (distance <= 0.1) {
-                LocalDateTime now = LocalDateTime.now();
-                LocalDateTime lastEntryTime = lastEntryTimes.get(courierEntity.getId());
+            if (distance < 0.1) {
+                CourierLocationLogEntity lastEntry = logRepository.findFirstByCourierAndStoreOrderByTimestampDesc(courierEntity, store);
 
-                if (lastEntryTime == null || ChronoUnit.MINUTES.between(lastEntryTime, now) > 1) {
-                    lastEntryTimes.put(courierEntity.getId(), now);
+                if (lastEntry == null || ChronoUnit.MINUTES.between(lastEntry.getTimestamp(), now) > 1) {
                     CourierLocationLogEntity logEntity = new CourierLocationLogEntity();
                     logEntity.setCourier(courierEntity);
                     logEntity.setStore(store);
@@ -70,7 +63,7 @@ public class CourierLocationService {
                     logRepository.save(logEntity);
                 }
             }
-        }
+        });
     }
 
     public List<CourierLocationResponse> getAllCourierLocations() {
@@ -89,28 +82,22 @@ public class CourierLocationService {
             throw new CourierNotFoundException();
         }
 
-        CourierEntity nearestCourier = null;
-        double nearestDistance = Double.MAX_VALUE;
+        CourierEntity nearestCourier = availableCouriers.stream()
+                .map(courier -> {
+                    Optional<CourierLocationEntity> lastCourierLocation = courierLocationRepository.findFirstByCourierIdOrderByLastModifiedDate(courier.getId());
+                    return lastCourierLocation.map(location -> new AbstractMap.SimpleEntry<>(courier, evaluationServiceClient.calculateDistance(
+                                    latitude, longitude, location.getLatitude(), location.getLongitude())))
+                            .orElse(null);
+                })
+                .filter(Objects::nonNull)
+                .min(Comparator.comparingDouble(AbstractMap.SimpleEntry::getValue))
+                .map(AbstractMap.SimpleEntry::getKey)
+                .orElseThrow(CourierNotFoundException::new);
 
-        for (CourierEntity courier : availableCouriers) {
-            List<CourierLocationEntity> locations = courierLocationRepository.findAllByCourierOrderByLastModifiedDateDesc(courier);
-            if (!locations.isEmpty()) {
-                CourierLocationEntity currentLocation = locations.get(0);
-                double distance = evaluationServiceClient.calculateDistance(latitude, longitude, currentLocation.getLatitude(), currentLocation.getLongitude());
-                if (distance < nearestDistance) {
-                    nearestDistance = distance;
-                    nearestCourier = courier;
-                }
-            }
-        }
-
-        if (nearestCourier == null) {
-            throw new CourierNotFoundException();
-        }
-
-        CourierLocationEntity nearestLocation = courierLocationRepository.findTopByCourierOrderByCreatedDateDesc(nearestCourier);
-        return CourierLocationConverter.toCourierResponse(nearestLocation);
+        return CourierLocationConverter.toCourierResponse(courierLocationRepository.findById(nearestCourier.getId())
+                .orElseThrow(CourierNotFoundException::new));
     }
+
     public void deleteCourierLocation(Long id) {
         courierLocationRepository.deleteById(id);
     }
