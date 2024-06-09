@@ -54,7 +54,7 @@ public class StoreService {
         storeRepository.deleteById(id);
     }
 
-    public StoreResponse findNearestStore(double latitude, double longitude) {
+    public StoreEntity findNearestStore(double latitude, double longitude) {
         List<StoreEntity> stores = storeRepository.findAll();
         StoreEntity nearestStore = null;
         double nearestDistance = Double.MAX_VALUE;
@@ -67,7 +67,10 @@ public class StoreService {
             }
         }
 
-        return StoreConverter.toStoreResponse(Objects.requireNonNull(nearestStore));
-    }
+        if (nearestStore == null) {
+            throw new StoreNotFoundException();
+        }
 
+        return nearestStore;
+    }
 }

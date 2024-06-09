@@ -49,7 +49,7 @@ public class CourierService {
     }
 
     @Transactional
-    public CourierResponse findNearestCourier(double latitude, double longitude) {
+    public CourierEntity findNearestAvailableCourier(double latitude, double longitude) {
         List<CourierEntity> availableCouriers = courierRepository.findByCourierStatus(CourierStatus.AVAILABLE.getStatus());
         CourierEntity nearestCourier = null;
         double nearestDistance = Double.MAX_VALUE;
@@ -69,7 +69,7 @@ public class CourierService {
             throw new CourierNotFoundException();
         }
 
-        return CourierConverter.toCourierResponse(nearestCourier);
+        return nearestCourier;
     }
 
     public double getTotalDistanceTraveled(Long courierId) {

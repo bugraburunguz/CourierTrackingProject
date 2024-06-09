@@ -2,6 +2,7 @@ package com.couriertracking.storeservice.controller;
 
 import com.couriertracking.storemodel.request.StoreRequest;
 import com.couriertracking.storemodel.resonse.StoreResponse;
+import com.couriertracking.storeservice.persistance.entity.StoreEntity;
 import com.couriertracking.storeservice.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +36,8 @@ public class StoreController {
         return storeService.updateStore(id, request);
     }
 
-    @GetMapping("/api/stores/nearest")
-    public StoreResponse findNearestStore(@RequestParam double latitude, @RequestParam double longitude) {
+    @GetMapping("/stores/nearest")
+    public StoreEntity findNearestStore(@RequestParam double latitude, @RequestParam double longitude) {
         return storeService.findNearestStore(latitude, longitude);
     }
 

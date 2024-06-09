@@ -62,8 +62,6 @@ public class CourierLocationService {
 
                 if (lastEntryTime == null || ChronoUnit.MINUTES.between(lastEntryTime, now) > 1) {
                     lastEntryTimes.put(courierEntity.getId(), now);
-                    log.info("Courier {} entered the radius of store {}", courierEntity.getId(), store.getName());
-
                     CourierLocationLogEntity logEntity = new CourierLocationLogEntity();
                     logEntity.setCourier(courierEntity);
                     logEntity.setStore(store);

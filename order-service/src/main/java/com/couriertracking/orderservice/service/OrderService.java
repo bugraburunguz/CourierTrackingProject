@@ -37,8 +37,8 @@ public class OrderService {
         CustomerEntity customer = customerRepository.findById(request.getCustomerId())
                 .orElseThrow(CustomerNotFoundException::new);
 
-        StoreResponse nearestStore = storeClient.getNearestStore(customer.getLatitude(), customer.getLongitude());
-        CourierResponse nearestAvailableCourier = courierClient.getNearestAvailableCourier(nearestStore.getLat(), nearestStore.getLng());
+        StoreEntity nearestStore = storeClient.findNearestStore(customer.getLatitude(), customer.getLongitude());
+        CourierEntity nearestAvailableCourier = courierClient.findNearestAvailableCourier(nearestStore.getLat(), nearestStore.getLng());
 
         StoreEntity storeEntity = new StoreEntity();
         storeEntity.setId(nearestStore.getId());

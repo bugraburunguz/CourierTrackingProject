@@ -3,6 +3,7 @@ package com.couriertracking.courierservice.controller;
 import com.couriertracking.couriermodel.request.CourierRegisterRequest;
 import com.couriertracking.couriermodel.request.CourierRequest;
 import com.couriertracking.couriermodel.response.CourierResponse;
+import com.couriertracking.courierservice.persistance.entity.CourierEntity;
 import com.couriertracking.courierservice.service.CourierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -41,13 +42,13 @@ public class CourierController {
         courierService.deleteCourier(id);
     }
 
-    @GetMapping("/couriers/{id}/total-distance")
+    @GetMapping("/{id}/total-distance")
     public double getTotalDistanceTraveled(@PathVariable Long id) {
         return courierService.getTotalDistanceTraveled(id);
     }
 
-    @GetMapping("/couriers/nearest")
-    public CourierResponse findNearestCourier(@RequestParam double latitude, @RequestParam double longitude) {
-        return courierService.findNearestCourier(latitude, longitude);
+    @GetMapping("/nearest")
+    public CourierEntity findNearestCourier(@RequestParam double latitude, @RequestParam double longitude) {
+        return courierService.findNearestAvailableCourier(latitude, longitude);
     }
 }
