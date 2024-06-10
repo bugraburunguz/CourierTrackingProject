@@ -3,22 +3,17 @@ package com.couriertracking.courierservice.service;
 import com.couriertracking.couriermodel.enums.CourierStatus;
 import com.couriertracking.couriermodel.request.CourierRegisterRequest;
 import com.couriertracking.couriermodel.request.CourierRequest;
-import com.couriertracking.couriermodel.response.CourierLocationResponse;
 import com.couriertracking.couriermodel.response.CourierResponse;
 import com.couriertracking.courierservice.advice.exception.CourierNotFoundException;
-import com.couriertracking.courierservice.client.EvaluationServiceClient;
-import com.couriertracking.courierservice.converter.CourierConverter;
 import com.couriertracking.courierservice.persistance.entity.CourierEntity;
 import com.couriertracking.courierservice.persistance.entity.CourierLocationEntity;
-import com.couriertracking.courierservice.persistance.entity.StoreEntity;
 import com.couriertracking.courierservice.persistance.repository.CourierLocationRepository;
 import com.couriertracking.courierservice.persistance.repository.CourierRepository;
-import jakarta.transaction.Transactional;
+import com.couriertracking.evaluationservice.factory.HaversineFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +26,6 @@ public class CourierService {
 
     private final CourierRepository courierRepository;
     private final CourierLocationRepository courierLocationRepository;
-    private final EvaluationServiceClient evaluationServiceClient;
 
     public void createCourier(CourierRegisterRequest request) {
         CourierEntity courierEntity = toCourierEntity(request);
@@ -69,7 +63,7 @@ public class CourierService {
         for (int i = 1; i < locations.size(); i++) {
             CourierLocationEntity start = locations.get(i - 1);
             CourierLocationEntity end = locations.get(i);
-            totalDistance += evaluationServiceClient.calculateDistance(start.getLatitude(), start.getLongitude(), end.getLatitude(), end.getLongitude());
+            totalDistance += HaversineFactory.createHaversine().calculateDistance(start.getLatitude(), start.getLongitude(), end.getLatitude(), end.getLongitude());
         }
 
         return totalDistance;

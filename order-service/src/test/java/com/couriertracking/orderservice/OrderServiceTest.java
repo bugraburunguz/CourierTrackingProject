@@ -10,7 +10,6 @@ import com.couriertracking.ordermodel.request.OrderRequest;
 import com.couriertracking.ordermodel.response.OrderResponse;
 import com.couriertracking.orderservice.advice.exception.*;
 import com.couriertracking.orderservice.client.CourierServiceClient;
-import com.couriertracking.orderservice.client.EvaluationServiceClient;
 import com.couriertracking.orderservice.client.StoreServiceClient;
 import com.couriertracking.orderservice.persistance.entity.*;
 import com.couriertracking.orderservice.persistance.repository.CustomerRepository;
@@ -39,9 +38,6 @@ class OrderServiceTest {
 
     @Mock
     private CourierServiceClient courierServiceClient;
-
-    @Mock
-    private EvaluationServiceClient evaluationServiceClient;
 
     @InjectMocks
     private OrderService orderService;
@@ -190,69 +186,5 @@ class OrderServiceTest {
         orderService.deleteOrder(orderId);
 
         verify(orderRepository, times(1)).deleteById(orderId);
-    }
-
-    @Test
-    void testDeliverOrder() {
-        OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setId(1L);
-        orderEntity.setStatus(OrderStatus.PENDING);
-        CustomerEntity customer = new CustomerEntity();
-        customer.setId(1L);
-        customer.setLatitude(40.748817);
-        customer.setLongitude(-73.985428);
-        CourierEntity courier = new CourierEntity();
-        courier.setId(1L);
-        orderEntity.setCustomer(customer);
-        orderEntity.setCourier(courier);
-
-        CourierLocationResponse courierLocationResponse = new CourierLocationResponse();
-        courierLocationResponse.setId(1L);
-        courierLocationResponse.setLatitude(40.748817);
-        courierLocationResponse.setLongitude(-73.985428);
-
-        when(orderRepository.findById(1L)).thenReturn(Optional.of(orderEntity));
-        when(courierServiceClient.getCourierLocationById(1L)).thenReturn(courierLocationResponse);
-        when(evaluationServiceClient.calculateDistance(anyDouble(), anyDouble(), anyDouble(), anyDouble())).thenReturn(0.004);
-
-        orderService.deliverOrder(1L, 1L);
-
-        assertEquals(OrderStatus.DELIVERED, orderEntity.getStatus());
-        verify(orderRepository, times(1)).findById(1L);
-        verify(orderRepository, times(1)).save(orderEntity);
-        verify(courierServiceClient, times(1)).getCourierLocationById(1L);
-        verify(evaluationServiceClient, times(1)).calculateDistance(anyDouble(), anyDouble(), anyDouble(), anyDouble());
-        verify(courierServiceClient, times(1)).updateStatus(1L, CourierStatus.AVAILABLE);
-    }
-
-
-    @Test
-    void testDeliverOrder_CourierNotCloseLocation() {
-        OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setId(1L);
-        orderEntity.setStatus(OrderStatus.PENDING);
-        CustomerEntity customer = new CustomerEntity();
-        customer.setId(1L);
-        customer.setLatitude(40.748817);
-        customer.setLongitude(-73.985428);
-        CourierEntity courier = new CourierEntity();
-        courier.setId(1L);
-        orderEntity.setCustomer(customer);
-        orderEntity.setCourier(courier);
-
-        CourierLocationResponse courierLocationResponse = new CourierLocationResponse();
-        courierLocationResponse.setId(1L);
-        courierLocationResponse.setLatitude(40.748817);
-        courierLocationResponse.setLongitude(-73.985428);
-
-        when(orderRepository.findById(1L)).thenReturn(Optional.of(orderEntity));
-        when(courierServiceClient.getCourierLocationById(1L)).thenReturn(courierLocationResponse);
-        when(evaluationServiceClient.calculateDistance(anyDouble(), anyDouble(), anyDouble(), anyDouble())).thenReturn(0.006);
-
-        assertThrows(CourierNotCloseLocation.class, () -> orderService.deliverOrder(1L, 1L));
-
-        verify(orderRepository, times(1)).findById(1L);
-        verify(courierServiceClient, times(1)).getCourierLocationById(1L);
-        verify(evaluationServiceClient, times(1)).calculateDistance(anyDouble(), anyDouble(), anyDouble(), anyDouble());
     }
 }

@@ -1,9 +1,9 @@
 package com.couriertracking.storeservice.service;
 
+import com.couriertracking.evaluationservice.factory.HaversineFactory;
 import com.couriertracking.storemodel.request.StoreRequest;
 import com.couriertracking.storemodel.resonse.StoreResponse;
 import com.couriertracking.storeservice.advice.exception.StoreNotFoundException;
-import com.couriertracking.storeservice.client.EvaluationServiceClient;
 import com.couriertracking.storeservice.converter.StoreConverter;
 import com.couriertracking.storeservice.persistance.repository.StoreRepository;
 import com.couriertracking.storeservice.persistance.entity.StoreEntity;
@@ -18,7 +18,6 @@ import java.util.List;
 public class StoreService {
 
     private final StoreRepository storeRepository;
-    private final EvaluationServiceClient evaluationServiceClient;
 
     @Transactional
     public StoreResponse createStore(StoreRequest request) {
@@ -59,7 +58,7 @@ public class StoreService {
         double nearestDistance = Double.MAX_VALUE;
 
         for (StoreEntity store : stores) {
-            double distance = evaluationServiceClient.calculateDistance(latitude, longitude, store.getLat(), store.getLng());
+            double distance = HaversineFactory.createHaversine().calculateDistance(latitude, longitude, store.getLat(), store.getLng());
             if (distance < nearestDistance) {
                 nearestDistance = distance;
                 nearestStore = store;

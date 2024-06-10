@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "store-service", url = "${feign.client.config.store-service.url}")
 public interface StoreServiceClient {
 
-    @GetMapping("/nearest-store")
+    @GetMapping("/stores/nearest-store")
     StoreResponse findNearestStore(@RequestParam double latitude, @RequestParam double longitude);
 }

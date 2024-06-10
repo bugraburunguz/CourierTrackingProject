@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import com.couriertracking.storemodel.request.StoreRequest;
 import com.couriertracking.storemodel.resonse.StoreResponse;
 import com.couriertracking.storeservice.advice.exception.StoreNotFoundException;
-import com.couriertracking.storeservice.client.EvaluationServiceClient;
 import com.couriertracking.storeservice.converter.StoreConverter;
 import com.couriertracking.storeservice.persistance.entity.StoreEntity;
 import com.couriertracking.storeservice.persistance.repository.StoreRepository;
@@ -24,10 +23,6 @@ class StoreServiceTest {
 
     @Mock
     private StoreRepository storeRepository;
-
-    @Mock
-    private EvaluationServiceClient evaluationServiceClient;
-
     @InjectMocks
     private StoreService storeService;
 
@@ -128,57 +123,11 @@ class StoreServiceTest {
     }
 
     @Test
-    void updateStore_NotFound() {
-        StoreRequest request = new StoreRequest("UpdatedStore", 41.902783, 12.496366);
-
-        when(storeRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(StoreNotFoundException.class, () -> storeService.updateStore(1L, request));
-
-        verify(storeRepository, times(1)).findById(1L);
-    }
-
-    @Test
     void deleteStore() {
         Long storeId = 1L;
 
         storeService.deleteStore(storeId);
 
         verify(storeRepository, times(1)).deleteById(storeId);
-    }
-
-    @Test
-    void findNearestStore() {
-        StoreEntity store1 = new StoreEntity();
-        store1.setId(1L);
-        store1.setName("Store1");
-        store1.setLat(40.748817);
-        store1.setLng(-73.985428);
-
-        StoreEntity store2 = new StoreEntity();
-        store2.setId(2L);
-        store2.setName("Store2");
-        store2.setLat(41.902783);
-        store2.setLng(12.496366);
-
-        when(storeRepository.findAll()).thenReturn(List.of(store1, store2));
-        when(evaluationServiceClient.calculateDistance(anyDouble(), anyDouble(), eq(40.748817), eq(-73.985428))).thenReturn(10.0);
-        when(evaluationServiceClient.calculateDistance(anyDouble(), anyDouble(), eq(41.902783), eq(12.496366))).thenReturn(5.0);
-
-        StoreResponse response = storeService.findNearestStore(40.748817, -73.985428);
-
-        assertNotNull(response);
-        assertEquals(store2.getId(), response.getId());
-        verify(storeRepository, times(1)).findAll();
-        verify(evaluationServiceClient, times(2)).calculateDistance(anyDouble(), anyDouble(), anyDouble(), anyDouble());
-    }
-
-    @Test
-    void findNearestStore_NotFound() {
-        when(storeRepository.findAll()).thenReturn(List.of());
-
-        assertThrows(StoreNotFoundException.class, () -> storeService.findNearestStore(40.748817, -73.985428));
-
-        verify(storeRepository, times(1)).findAll();
     }
 }

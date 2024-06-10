@@ -3,20 +3,16 @@ package com.couriertracking.courierservice.service;
 import com.couriertracking.couriermodel.enums.CourierStatus;
 import com.couriertracking.couriermodel.request.CourierLocationRequest;
 import com.couriertracking.couriermodel.response.CourierLocationResponse;
-import com.couriertracking.couriermodel.response.CourierResponse;
-import com.couriertracking.courierservice.advice.constant.ErrorCodes;
 import com.couriertracking.courierservice.advice.exception.CourierNotFoundException;
-import com.couriertracking.courierservice.client.EvaluationServiceClient;
-import com.couriertracking.courierservice.converter.CourierConverter;
 import com.couriertracking.courierservice.converter.CourierLocationConverter;
 import com.couriertracking.courierservice.persistance.entity.CourierEntity;
 import com.couriertracking.courierservice.persistance.entity.CourierLocationEntity;
 import com.couriertracking.courierservice.persistance.entity.CourierLocationLogEntity;
-import com.couriertracking.courierservice.persistance.entity.StoreEntity;
 import com.couriertracking.courierservice.persistance.repository.CourierLocationLogRepository;
 import com.couriertracking.courierservice.persistance.repository.CourierLocationRepository;
 import com.couriertracking.courierservice.persistance.repository.CourierRepository;
 import com.couriertracking.courierservice.persistance.repository.StoreRepository;
+import com.couriertracking.evaluationservice.factory.HaversineFactory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import static com.couriertracking.courierservice.converter.CourierConverter.toCourierResponse;
 import static com.couriertracking.courierservice.converter.CourierLocationConverter.toCourierLocationEntity;
 
 @Service
@@ -41,7 +34,7 @@ public class CourierLocationService {
     private final CourierRepository courierRepository;
     private final StoreRepository storeRepository;
     private final CourierLocationLogRepository logRepository;
-    private final EvaluationServiceClient evaluationServiceClient;
+
     @Transactional
     public void saveCurrentCourierLocation(CourierLocationRequest courierLocationRequest) {
         CourierEntity courierEntity = courierRepository.findById(courierLocationRequest.getCourierId())
@@ -54,7 +47,7 @@ public class CourierLocationService {
         LocalDateTime now = LocalDateTime.now();
 
         storeRepository.findAll().forEach(store -> {
-            double distance = evaluationServiceClient.calculateDistance(
+            double distance = HaversineFactory.createHaversine().calculateDistance(
                     courierLocationRequest.getLatitude(), courierLocationRequest.getLongitude(),
                     store.getLat(), store.getLng()
             );
@@ -95,7 +88,7 @@ public class CourierLocationService {
             Optional<CourierLocationEntity> lastCourierLocation = courierLocationRepository.findFirstByCourierIdOrderByLastModifiedDateDesc(courier.getId());
             if (lastCourierLocation.isPresent()) {
                 CourierLocationEntity currentLocation = lastCourierLocation.get();
-                double distance = evaluationServiceClient.calculateDistance(latitude,
+                double distance = HaversineFactory.createHaversine().calculateDistance(latitude,
                         longitude,
                         currentLocation.getLatitude(),
                         currentLocation.getLongitude());

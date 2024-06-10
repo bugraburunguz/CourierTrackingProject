@@ -2,12 +2,13 @@ package com.couriertracking.orderservice.service;
 
 import com.couriertracking.couriermodel.enums.CourierStatus;
 import com.couriertracking.couriermodel.response.CourierLocationResponse;
+import com.couriertracking.evaluationservice.factory.HaversineFactory;
+import com.couriertracking.evaluationservice.model.Haversine;
 import com.couriertracking.ordermodel.enums.OrderStatus;
 import com.couriertracking.ordermodel.request.OrderRequest;
 import com.couriertracking.ordermodel.response.OrderResponse;
 import com.couriertracking.orderservice.advice.exception.*;
 import com.couriertracking.orderservice.client.CourierServiceClient;
-import com.couriertracking.orderservice.client.EvaluationServiceClient;
 import com.couriertracking.orderservice.client.StoreServiceClient;
 import com.couriertracking.orderservice.converter.OrderConverter;
 import com.couriertracking.orderservice.persistance.entity.*;
@@ -31,7 +32,7 @@ public class OrderService {
     private final CustomerRepository customerRepository;
     private final StoreServiceClient storeServiceClient;
     private final CourierServiceClient courierServiceClient;
-    private final EvaluationServiceClient evaluationServiceClient;
+    private final Haversine haversine = HaversineFactory.createHaversine();
 
     @Transactional
     public OrderResponse createOrder(OrderRequest request) {
@@ -81,7 +82,7 @@ public class OrderService {
 
         CourierLocationResponse courierLocation = courierServiceClient.getCourierLocationById(courier);
 
-        double distanceToCustomer = evaluationServiceClient.calculateDistance(
+        double distanceToCustomer = haversine.calculateDistance(
                 courierLocation.getLatitude(), courierLocation.getLongitude(),
                 order.getCustomer().getLatitude(), order.getCustomer().getLongitude()
         );

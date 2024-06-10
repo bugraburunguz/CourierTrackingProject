@@ -21,10 +21,7 @@ feign:
         url: http://localhost:8081
       store-service:
         name: store-service
-        url: http://localhost:8085/stores
-      evaluation-service:
-        name: evaluation-service
-        url: http://localhost:8083
+        url: http://localhost:8085
 
 springdoc:
   packagesToScan: com.couriertracking

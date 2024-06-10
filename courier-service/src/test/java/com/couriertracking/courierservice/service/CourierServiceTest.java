@@ -4,7 +4,6 @@ import com.couriertracking.couriermodel.enums.CourierStatus;
 import com.couriertracking.couriermodel.request.CourierRegisterRequest;
 import com.couriertracking.couriermodel.response.CourierResponse;
 import com.couriertracking.courierservice.advice.exception.CourierNotFoundException;
-import com.couriertracking.courierservice.client.EvaluationServiceClient;
 import com.couriertracking.courierservice.persistance.entity.CourierEntity;
 import com.couriertracking.courierservice.persistance.repository.CourierLocationRepository;
 import com.couriertracking.courierservice.persistance.repository.CourierRepository;
@@ -29,9 +28,6 @@ class CourierServiceTest {
 
     @Mock
     private CourierLocationRepository courierLocationRepository;
-
-    @Mock
-    private EvaluationServiceClient evaluationServiceClient;
 
     @InjectMocks
     private CourierService courierService;

@@ -17,6 +17,7 @@
         <java.version>17</java.version>
         <openapi.version>2.2.0</openapi.version>
         <courier-model.version>1.0.0</courier-model.version>
+        <evaluation-utils.version>1.0.0</evaluation-utils.version>
         <spring-cloud.version>2023.0.2</spring-cloud.version>
     </properties>
     <dependencies>
@@ -24,6 +25,11 @@
             <groupId>com.couriertracking</groupId>
             <artifactId>courier-model</artifactId>
             <version>${courier-model.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.couriertracking</groupId>
+            <artifactId>evaluation-utils</artifactId>
+            <version>${evaluation-utils.version}</version>
         </dependency>
 
         <dependency>
