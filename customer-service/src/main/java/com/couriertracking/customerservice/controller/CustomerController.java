@@ -4,11 +4,9 @@ import com.couriertracking.customermodel.request.CustomerRequest;
 import com.couriertracking.customermodel.response.CustomerResponse;
 import com.couriertracking.customerservice.service.CustomerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//todo path değişti
 @RestController
 @RequestMapping("/customers")
 @RequiredArgsConstructor

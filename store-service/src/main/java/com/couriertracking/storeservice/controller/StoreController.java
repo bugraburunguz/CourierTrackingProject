@@ -2,7 +2,6 @@ package com.couriertracking.storeservice.controller;
 
 import com.couriertracking.storemodel.request.StoreRequest;
 import com.couriertracking.storemodel.resonse.StoreResponse;
-import com.couriertracking.storeservice.persistance.entity.StoreEntity;
 import com.couriertracking.storeservice.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

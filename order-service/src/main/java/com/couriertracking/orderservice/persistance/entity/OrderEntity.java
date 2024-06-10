@@ -1,6 +1,7 @@
 package com.couriertracking.orderservice.persistance.entity;
 
 
+import com.couriertracking.ordermodel.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +32,10 @@ public class OrderEntity {
     @ManyToOne
     @JoinColumn(name = "storeId", nullable = false)
     private StoreEntity store;
-    //TODO: ORDER STATUS EKLE ACTIVE DELIVERED CANCELED
+
+    @Column
+    private OrderStatus status;
+
     @CreatedDate
     private LocalDateTime createdDate;
 

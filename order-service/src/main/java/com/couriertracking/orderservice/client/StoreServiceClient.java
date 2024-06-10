@@ -1,6 +1,5 @@
 package com.couriertracking.orderservice.client;
 
-import com.couriertracking.orderservice.persistance.entity.StoreEntity;
 import com.couriertracking.storemodel.resonse.StoreResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -2,7 +2,6 @@ package com.couriertracking.courierservice.controller;
 
 import com.couriertracking.couriermodel.request.CourierLocationRequest;
 import com.couriertracking.couriermodel.response.CourierLocationResponse;
-import com.couriertracking.courierservice.persistance.entity.CourierEntity;
 import com.couriertracking.courierservice.service.CourierLocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/courier-locations")
-//TODO: PATH DEĞİŞTİ !!!
 public class CourierLocationController {
 
     private final CourierLocationService courierLocationService;

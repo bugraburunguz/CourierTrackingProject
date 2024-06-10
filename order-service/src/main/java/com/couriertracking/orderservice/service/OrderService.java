@@ -2,18 +2,15 @@ package com.couriertracking.orderservice.service;
 
 import com.couriertracking.couriermodel.enums.CourierStatus;
 import com.couriertracking.couriermodel.response.CourierLocationResponse;
-import com.couriertracking.couriermodel.response.CourierResponse;
+import com.couriertracking.ordermodel.enums.OrderStatus;
 import com.couriertracking.ordermodel.request.OrderRequest;
 import com.couriertracking.ordermodel.response.OrderResponse;
-import com.couriertracking.orderservice.advice.exception.CourierNotFoundException;
-import com.couriertracking.orderservice.advice.exception.CustomerNotFoundException;
-import com.couriertracking.orderservice.advice.exception.OrderNotFoundException;
+import com.couriertracking.orderservice.advice.exception.*;
 import com.couriertracking.orderservice.client.CourierServiceClient;
 import com.couriertracking.orderservice.client.EvaluationServiceClient;
 import com.couriertracking.orderservice.client.StoreServiceClient;
 import com.couriertracking.orderservice.converter.OrderConverter;
 import com.couriertracking.orderservice.persistance.entity.*;
-import com.couriertracking.orderservice.persistance.repository.CourierRepository;
 import com.couriertracking.orderservice.persistance.repository.CustomerRepository;
 import com.couriertracking.orderservice.persistance.repository.OrderRepository;
 import com.couriertracking.storemodel.resonse.StoreResponse;
@@ -34,7 +31,6 @@ public class OrderService {
     private final CustomerRepository customerRepository;
     private final StoreServiceClient storeServiceClient;
     private final CourierServiceClient courierServiceClient;
-    private final CourierRepository courierRepository;
     private final EvaluationServiceClient evaluationServiceClient;
 
     @Transactional
@@ -46,6 +42,7 @@ public class OrderService {
         CourierLocationResponse nearestAvailableCourier = courierServiceClient.findNearestCourier(nearestStore.getLat(), nearestStore.getLng());
 
         OrderEntity order = OrderConverter.toOrderEntity(customer, nearestAvailableCourier.getId(), nearestStore.getId());
+        order.setStatus(OrderStatus.PENDING);
         OrderEntity savedOrder = orderRepository.save(order);
 
         courierServiceClient.updateStatus(nearestAvailableCourier.getId(), CourierStatus.BUSY);
@@ -75,11 +72,11 @@ public class OrderService {
 
         Long courier = order.getCourier().getId();
         if (courier == null) {
-            throw new IllegalStateException("Order has no assigned courier.");
+            throw new OrderCourierNotFound();
         }
 
         if (!Objects.equals(courier, courierId)) {
-            throw new IllegalStateException("Unknown courier.");
+            throw new CourierNotFoundException();
         }
 
         CourierLocationResponse courierLocation = courierServiceClient.getCourierLocationById(courier);
@@ -90,10 +87,9 @@ public class OrderService {
         );
 
         if (distanceToCustomer > 0.005) {
-            //todo: yakın değilsin hatası
-            throw new RuntimeException();
+            throw new CourierNotCloseLocation();
         }
-
+        order.setStatus(OrderStatus.DELIVERED);
         orderRepository.save(order);
         courierServiceClient.updateStatus(courier, CourierStatus.AVAILABLE);
         log.info("Order delivered. order id: {} courier id: {}", orderId, courier);

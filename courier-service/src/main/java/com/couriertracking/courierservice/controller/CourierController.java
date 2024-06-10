@@ -4,7 +4,6 @@ import com.couriertracking.couriermodel.enums.CourierStatus;
 import com.couriertracking.couriermodel.request.CourierRegisterRequest;
 import com.couriertracking.couriermodel.request.CourierRequest;
 import com.couriertracking.couriermodel.response.CourierResponse;
-import com.couriertracking.courierservice.persistance.entity.CourierEntity;
 import com.couriertracking.courierservice.service.CourierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +46,6 @@ public class CourierController {
     public double getTotalDistanceTraveled(@PathVariable Long id) {
         return courierService.getTotalDistanceTraveled(id);
     }
-    //TODO: PATH DEĞİŞTİ
     @PutMapping("/{id}/status")
     public void updateStatus(@PathVariable Long id, @RequestParam CourierStatus status) {
         courierService.updateStatus(id, status);

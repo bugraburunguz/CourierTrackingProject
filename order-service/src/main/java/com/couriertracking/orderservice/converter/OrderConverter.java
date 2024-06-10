@@ -1,6 +1,5 @@
 package com.couriertracking.orderservice.converter;
 
-import com.couriertracking.ordermodel.request.OrderRequest;
 import com.couriertracking.ordermodel.response.OrderResponse;
 import com.couriertracking.orderservice.persistance.entity.CourierEntity;
 import com.couriertracking.orderservice.persistance.entity.CustomerEntity;
@@ -10,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderConverter {
@@ -32,6 +30,7 @@ public class OrderConverter {
                 .customerId(entity.getCustomer().getId())
                 .courierId(entity.getCourier().getId())
                 .storeId(entity.getStore().getId())
+                .orderStatus(entity.getStatus().getStatus())
                 .createdDate(entity.getCreatedDate())
                 .lastModifiedDate(entity.getLastModifiedDate())
                 .build();
@@ -40,6 +39,6 @@ public class OrderConverter {
     public static List<OrderResponse> toOrderResponseList(List<OrderEntity> entities) {
         return entities.stream()
                 .map(OrderConverter::toOrderResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

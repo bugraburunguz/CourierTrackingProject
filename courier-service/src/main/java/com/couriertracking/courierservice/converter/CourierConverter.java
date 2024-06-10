@@ -1,11 +1,9 @@
 package com.couriertracking.courierservice.converter;
 
 import com.couriertracking.couriermodel.enums.CourierStatus;
-import com.couriertracking.couriermodel.request.CourierLocationRequest;
 import com.couriertracking.couriermodel.request.CourierRegisterRequest;
 import com.couriertracking.couriermodel.response.CourierResponse;
 import com.couriertracking.courierservice.persistance.entity.CourierEntity;
-import com.couriertracking.courierservice.persistance.entity.CourierLocationEntity;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
